@@ -10,7 +10,6 @@
 
 #include "ofxNSWindow.h"
 
-
 ofxNSWindow::ofxNSWindow(ofxNSWindowApp *app, string name, int options, float frameRate):
 name(name), frameRate(frameRate), isFullscreen(false) {
 
@@ -114,31 +113,78 @@ void ofxNSWindow::setWindowPosition(int x, int y) {
 	frame.y = y;
 }
 
-void	ofxNSWindow::setFullscreen(bool fullscreen){
+void ofxNSWindow::setFullscreen(bool fullscreen){
+    if( fullscreen ){
+        
+        NSRect frame = window.screen.frame; //[[NSScreen mainScreen] frame];
+        // Instantiate new borderless window
+        fullscreenWindow = [[NSWindow alloc]
+                            initWithContentRect:frame
+                            styleMask:NSBorderlessWindowMask
+                            backing:NSBackingStoreBuffered
+                            defer: NO];
+        [window setAcceptsMouseMovedEvents:NO];
+        if(fullscreenWindow != nil) {
+            // Set the options for our new fullscreen window
+            [fullscreenWindow setTitle: @"Full Screen"];
+            [fullscreenWindow setReleasedWhenClosed: YES];
+            [fullscreenWindow setAcceptsMouseMovedEvents:YES];
+            [fullscreenWindow setContentView: glview];
+            [fullscreenWindow makeKeyAndOrderFront:glview ];
+            // By setting the window level to just beneath the screensaver,
+            // only this window will be visible (no menu bar or dock)
+            [fullscreenWindow setLevel: NSScreenSaverWindowLevel-1];
+            //[fullscreenWindow makeFirstResponder:glview];
+            [window makeKeyWindow];
+            isFullscreen = true;
+        } else {
+            NSLog(@"Error: could not create fullscreen window!");
+        }
+    }
+    else{
+        [fullscreenWindow close];
+        [window setAcceptsMouseMovedEvents:YES];
+        [window setContentView: glview];
+        [window makeKeyAndOrderFront: glview];
+        [window makeFirstResponder: glview];
+        isFullscreen = false;
+    }
+    
+    [glview prepareOpenGL];
 	
-	
-	if(fullscreen) {
-		NSScreen *screen = [NSScreen mainScreen];
-		[glview enterFullScreenMode:screen withOptions:nil];
-		NSRect f = [screen frame];
-		[glview setFrame:f];
-		oframe = frame;
-		frame.set(0, 0, f.size.width, f.size.height);
-	}
-	else {
-		[glview exitFullScreenModeWithOptions:nil];
-		[glview setFrame:NSMakeRect(0, 0, oframe.width, oframe.height)];
-		frame = oframe;
-	}
-
-	[glview prepareOpenGL];
-	[window makeFirstResponder:glview];
-
-	isFullscreen = fullscreen;
 }
 
-void	ofxNSWindow::toggleFullscreen(){
+//[window setCollectionBehavior:NSWindowCollectionBehaviorFullScreenPrimary];
 
+/*
+ void	ofxNSWindow::setFullscreen(bool fullscreen){
+ 
+ 
+ if(fullscreen) {
+ 
+ NSScreen *screen = [NSScreen mainScreen];
+ [glview enterFullScreenMode:screen withOptions:nil];
+ NSRect f = [screen frame];
+ [glview setFrame:f];
+ oframe = frame;
+ frame.set(0, 0, f.size.width, f.size.height);
+ 
+ 
+ }
+ else {
+ [glview exitFullScreenModeWithOptions:nil];
+ [glview setFrame:NSMakeRect(0, 0, oframe.width, oframe.height)];
+ frame = oframe;
+ }
+ 
+ [glview prepareOpenGL];
+ [window makeFirstResponder:glview];
+ 
+ isFullscreen = fullscreen;
+ }
+ */
+
+void ofxNSWindow::toggleFullscreen(){
 	setFullscreen(!isFullscreen);
 }
 

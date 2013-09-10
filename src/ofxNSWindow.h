@@ -14,6 +14,7 @@
 
 #import "OpenGLView.h"
 #import <Cocoa/Cocoa.h>
+#import <AppKit/NSWindow.h>
 
 class ofxNSWindowApp;
 class ofxNSWindow;
@@ -68,6 +69,7 @@ private:
 	bool isFullscreen;
 	
 	NSWindow *window;
+    NSWindow *fullscreenWindow;
 	OpenGLView *glview;
 	
 	WindowDelegate *windowDelegate;

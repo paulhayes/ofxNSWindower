@@ -339,6 +339,7 @@ static CVReturn displayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeSt
 
 - (void) keyDown: (NSEvent*) event {
 	
+
     int key = [event keyCode];
     int modifierFlags = [event modifierFlags];
     bool shiftDown = ( modifierFlags & NSShiftKeyMask ) != 0;
@@ -352,7 +353,9 @@ static CVReturn displayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeSt
         windowApp->keyPressed(OF_KEY_ALT);
     }
 
-	windowApp->keyPressed(key);
+    key = convertGlfwKeycodeToOfKeycode( convertMacKeyCode( event.keyCode ) );
+    //ofNotifyKeyPressed(key);
+    windowApp->keyPressed(key);
 
     if( shiftDown ){
         windowApp->keyReleased(OF_KEY_SHIFT);
@@ -361,6 +364,8 @@ static CVReturn displayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeSt
     if( altDown ){
         windowApp->keyReleased(OF_KEY_ALT);
     }
+
+   
 
 }
 
@@ -379,7 +384,9 @@ static CVReturn displayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeSt
         windowApp->keyPressed(OF_KEY_ALT);
     }
     
-	windowApp->keyReleased(key);
+    key = convertGlfwKeycodeToOfKeycode( convertMacKeyCode( event.keyCode ) );
+    //ofNotifyKeyReleased(key);
+    windowApp->keyReleased(key);
     
     if( shiftDown ){
         windowApp->keyReleased(OF_KEY_SHIFT);
@@ -388,6 +395,8 @@ static CVReturn displayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeSt
     if( altDown ){
         windowApp->keyReleased(OF_KEY_ALT);
     }
+    
+    
 }
 
 // - - - - SCROLLWHEEL - - - -

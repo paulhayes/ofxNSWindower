@@ -47,6 +47,13 @@ public:
 	virtual void mouseScrolled(float x, float y) {}
 	
 	virtual void dragEvent(ofDragInfo dragInfo) {}
+    
+    virtual void keyPressed( ofKeyEventArgs & key ){
+        keyPressed(key.key);
+    }
+    virtual void keyReleased( ofKeyEventArgs & key ){
+        keyReleased(key.key);
+    }
 	
 	int mouseX, mouseY;	//for processing heads, and i like processing so let's keep it
 	

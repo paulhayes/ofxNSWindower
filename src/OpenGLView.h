@@ -13,6 +13,7 @@
 
 #include "ofMain.h"
 #include "ofxNSWindowApp.h"
+#include "KeyboardMapping.h"
 
 #import <Cocoa/Cocoa.h>
 #import "OpenGLContext.h"

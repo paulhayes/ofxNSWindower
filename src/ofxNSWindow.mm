@@ -44,6 +44,10 @@ name(name), frameRate(frameRate), isFullscreen(false) {
 	[windowDelegate setView:[window contentView]];
 	[window setDelegate:windowDelegate];
 	[window setReleasedWhenClosed:YES];
+    
+    fullscreenDelegate = [[WindowDelegate alloc] init];
+    [fullscreenDelegate setApp:app];
+    [fullscreenDelegate setView:[window contentView]];
 
 	setWindowTitle(name);
 }
@@ -124,18 +128,26 @@ void ofxNSWindow::setFullscreen(bool fullscreen){
                             backing:NSBackingStoreBuffered
                             defer: NO];
         [window setAcceptsMouseMovedEvents:NO];
+        [window setDelegate:nil];
+        
         if(fullscreenWindow != nil) {
             // Set the options for our new fullscreen window
             [fullscreenWindow setTitle: @"Full Screen"];
             [fullscreenWindow setReleasedWhenClosed: YES];
             [fullscreenWindow setAcceptsMouseMovedEvents:YES];
             [fullscreenWindow setContentView: glview];
-            [fullscreenWindow makeKeyAndOrderFront:glview ];
+            [fullscreenWindow orderFront:glview];
+            [fullscreenWindow makeKeyAndOrderFront:glview];
+            [fullscreenWindow makeKeyWindow];
+            
+            [fullscreenDelegate setView:[fullscreenWindow contentView]];
+            [fullscreenWindow setDelegate:fullscreenDelegate];
+            
             // By setting the window level to just beneath the screensaver,
             // only this window will be visible (no menu bar or dock)
             [fullscreenWindow setLevel: NSScreenSaverWindowLevel-1];
             //[fullscreenWindow makeFirstResponder:glview];
-            [window makeKeyWindow];
+            //[window makeKeyWindow];
             isFullscreen = true;
         } else {
             NSLog(@"Error: could not create fullscreen window!");
@@ -147,6 +159,7 @@ void ofxNSWindow::setFullscreen(bool fullscreen){
         [window setContentView: glview];
         [window makeKeyAndOrderFront: glview];
         [window makeFirstResponder: glview];
+        [window setDelegate:windowDelegate];
         isFullscreen = false;
     }
     

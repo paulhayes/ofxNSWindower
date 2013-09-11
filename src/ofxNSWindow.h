@@ -73,7 +73,8 @@ private:
 	OpenGLView *glview;
 	
 	WindowDelegate *windowDelegate;
-	
+	WindowDelegate *fullscreenDelegate;
+    
 	ofxNSWindowApp *app;
 	
 };
